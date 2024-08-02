@@ -10,9 +10,8 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: Set the project name and model path
+:: Set the project name
 set "PROJECT_NAME=llama_assistant"
-set "MODEL_PATH=C:\Users\harry\meta-llama\Meta-Llama-3.1-8B-Instruct"
 
 :: Check if setup_llama_project.py exists in the current directory
 if not exist "setup_llama_project.py" (
@@ -24,7 +23,7 @@ if not exist "setup_llama_project.py" (
 
 :: Run the setup script
 echo Running Llama 3.1 project setup...
-python setup_llama_project.py "%PROJECT_NAME%" "%MODEL_PATH%" --force
+python setup_llama_project.py "%PROJECT_NAME%" --force
 
 if %errorlevel% neq 0 (
     echo An error occurred during the setup process.
@@ -33,14 +32,30 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: If successful, provide instructions
+:: If successful, activate the virtual environment and run the API server
 echo.
 echo Setup completed successfully!
-echo To activate the virtual environment, run:
-echo %PROJECT_NAME%\Scripts\activate.bat
-echo.
-echo To run the AI assistant, navigate to the project directory and run:
-echo python run.py
-echo.
+echo Activating virtual environment and running the API server...
+call %PROJECT_NAME%\ai_assistant\Scripts\activate.bat
+if %errorlevel% neq 0 (
+    echo Failed to activate virtual environment.
+    pause
+    exit /b 1
+)
+
+:: Change to the project directory
+cd %PROJECT_NAME%
+
+:: Run the API server
+python run.py
+
+if %errorlevel% neq 0 (
+    echo An error occurred while running the API server.
+    pause
+    exit /b 1
+)
+
+:: Deactivate the virtual environment (this line will only be reached if the user manually stops the server)
+call deactivate
 
 pause
