@@ -1,0 +1,10 @@
+torch
+transformers
+flask
+python-dotenv
+requests
+numpy
+pandas
+accelerate
+bitsandbytes
+sentencepiece
